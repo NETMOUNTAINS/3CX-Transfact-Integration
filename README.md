@@ -10,3 +10,4 @@ To-Do:
 ---------
 - ContactsLookup (waiting for endpoint)
 - Authentication (BasicAuth/OAuth)
+- Bug: UID only unique once a year
