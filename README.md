@@ -5,9 +5,9 @@
 DONE:
 -----
 - CallJournaling: Send call details to TF after call ended
+- ContactsLookup
+- Authentication (AccessKey)
 
 To-Do:
 ---------
-- ContactsLookup (waiting for endpoint)
-- Authentication (BasicAuth/OAuth)
-- Bug: UID only unique once a year
+- Nothing (for now)
