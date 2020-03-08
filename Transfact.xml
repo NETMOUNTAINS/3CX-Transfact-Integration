@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Crm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Country="DE" Name="Transfact" Version="2">
+<Crm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Country="DE" Name="Transfact" Version="3" Developer="s.reugels@netmountains.de">
     <Number Prefix="Plus" MaxLength="" />
     <Connection MaxConcurrentRequests="10" />
     <Parameters>
@@ -20,9 +20,12 @@
                 </PostValues>
             </Request>
             <Rules>
-                <Rule Type="Any">firstName</Rule>
+                <Rule Type="Any">contactId</Rule>
             </Rules>
             <Variables>
+                <Variable Name="ContactID" Path="contactId">
+                    <Filter />
+                </Variable>
                 <Variable Name="FirstName" Path="firstName">
                     <Filter />
                 </Variable>
@@ -41,15 +44,19 @@
                 <Variable Name="FaxBusiness" Path="faxBusiness">
                     <Filter />
                 </Variable>
+                <Variable Name="ContactURL" Path="contactUrl">
+                    <Filter />
+                </Variable>
             </Variables>
             <Outputs AllowEmpty="true">
+                <Output Type="ContactID" Passes="0" Value="[ContactID]" />
                 <Output Type="FirstName" Passes="0" Value="[FirstName]" />
                 <Output Type="LastName" Passes="0" Value="[LastName]" />
                 <Output Type="CompanyName" Passes="0" Value="[CompanyName]" />
-                <Output Type="PhoneBusiness" Passes="0" Value="[PhoneBusiness]" />
+                <Output Type="PhoneBusiness" Passes="0" Value="[Number]" />
                 <Output Type="PhoneMobile" Passes="0" Value="[PhoneMobile]" />
                 <Output Type="FaxBusiness" Passes="0" Value="[FaxBusiness]" />
-                <Output Type="ContactUrl" Passes="0" Value="https://transfact.de/[FirstName][LastName][CompanyName]" />
+                <Output Type="ContactUrl" Passes="0" Value="[ContactURL]" />
             </Outputs>
         </Scenario>
         <Scenario Id="ReportCall" Type="REST">
@@ -120,9 +127,9 @@
                 </PostValues>
             </Request>
             <Variables />
-            <Outputs Next="ReportCallOutgoingAnswered" AllowEmpty="true" />
+            <Outputs Next="ReportCallOutboundAnswered" AllowEmpty="true" />
         </Scenario>
-        <Scenario Id="ReportCallOutgoingAnswered" Type="REST">
+        <Scenario Id="ReportCallOutboundAnswered" Type="REST">
             <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Outbound" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
                 <PostValues>
                     <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
@@ -134,9 +141,9 @@
                 </PostValues>
             </Request>
             <Variables />
-            <Outputs Next="ReportCallOutgoingNotAnswered" AllowEmpty="true" />
+            <Outputs Next="ReportCallOutboundNotAnswered" AllowEmpty="true" />
         </Scenario>
-        <Scenario Id="ReportCallOutgoingNotAnswered" Type="REST">
+        <Scenario Id="ReportCallOutboundNotAnswered" Type="REST">
             <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Notanswered" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
                 <PostValues>
                     <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
