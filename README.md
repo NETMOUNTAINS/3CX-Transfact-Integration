@@ -36,4 +36,4 @@ License & Contribution:
 The software published here is licensed under Creative-Commons License BY-ND. 
 
 Thanks for contribution:
-- K.Huyn, U.Hoffmann, H.Martin @ Transfact GmbH
+- K.Huynh, U.Hoffmann, H.Martin @ Transfact GmbH
