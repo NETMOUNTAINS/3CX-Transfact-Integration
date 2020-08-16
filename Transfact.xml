@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Crm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Country="DE" Name="Transfact" Version="3" Developer="s.reugels@netmountains.de">
+<Crm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Country="DE" Name="Transfact" Version="4" Developer="s.reugels@netmountains.de">
     <Number Prefix="Plus" MaxLength="" />
     <Connection MaxConcurrentRequests="10" />
     <Parameters>
@@ -65,7 +65,7 @@
                     <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
                     <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
                     <Value Key="modus" Passes="1" Type="String">"INCOMING"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
+                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
                     <Value Key="caller" Passes="1" Type="String">[Number]</Value>
                     <Value Key="callee" Passes="1" Type="String">[Number]</Value>
                 </PostValues>
@@ -79,7 +79,7 @@
                     <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
                     <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
                     <Value Key="modus" Passes="1" Type="String">"ANSWERED"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
+                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
                     <Value Key="callee" Passes="1" Type="String">[Agent]</Value>
                 </PostValues>
             </Request>
@@ -92,7 +92,7 @@
                     <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
                     <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
                     <Value Key="modus" Passes="1" Type="String">"CALLEND"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
+                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
                     <Value Key="start" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
                     <Value Key="end" Passes="1" Type="String">[[CallEndTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
                 </PostValues>
@@ -106,7 +106,7 @@
                     <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
                     <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
                     <Value Key="modus" Passes="1" Type="String">"INCOMING"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
+                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
                     <Value Key="caller" Passes="1" Type="String">[Number]</Value>
                     <Value Key="callee" Passes="1" Type="String">[Number]</Value>
                 </PostValues>
@@ -120,7 +120,7 @@
                     <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
                     <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
                     <Value Key="modus" Passes="1" Type="String">"OUTGOING"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
+                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
                     <Value Key="caller" Passes="1" Type="String">[Agent]</Value>
                     <Value Key="callee" Passes="1" Type="String">[Number]</Value>
                     <Value Key="angenommenVon" Passes="1" Type="String">[Agent]</Value>
@@ -135,7 +135,7 @@
                     <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
                     <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
                     <Value Key="modus" Passes="1" Type="String">"CALLEND"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
+                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
                     <Value Key="start" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
                     <Value Key="end" Passes="1" Type="String">[[CallEndTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
                 </PostValues>
@@ -149,7 +149,7 @@
                     <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
                     <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
                     <Value Key="modus" Passes="1" Type="String">"OUTGOING"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
+                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
                     <Value Key="caller" Passes="1" Type="String">[Agent]</Value>
                     <Value Key="callee" Passes="1" Type="String">[Number]</Value>
                     <Value Key="angenommenVon" Passes="1" Type="String">[Agent]</Value>
