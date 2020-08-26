@@ -18,16 +18,17 @@ ACCESS_KEY=""
 # Default instance path, only modify in custom infrastructures
 MONITORDIR="/var/lib/3cxpbx/Instance1/Data/Recordings"
 #---------------------------------------------------
-
+echo "Starting call monitoring."
 inotifywait -m -r -e close_write --format '%w%f' "${MONITORDIR}" | while read NEWFILE
 do
         AGENT=$(echo ${NEWFILE} | rev | cut -d"/" -f2  | rev)
         TIMESTAMP=$(echo ${NEWFILE} | rev | cut -d"_" -f1 | rev | cut -d"(" -f1)
-        UID=$AGENT$TIMESTAMP
-        echo "Detected new ended call from agent $AGENT. Starting conversion"       
+        UID=$TIMESTAMP$AGENT
+        echo "Detected new ended call from agent $AGENT. Starting conversion"
         lame -V 6 --quiet "${NEWFILE}" "/tmp/$UID.mp3"
         echo "Finished conversion ID $UID. Uploading now."
-        curl -X POST "${API_URL}" -F "modus=CALLEND" -F "audioFile=@/tmp/${UID}" -F "uniqueid=${UID}" -F "mandantId=${MANDANT_ID}" -F "accesskey=${ACCESS_KEY}"
+        sleep 2
+        curl -X POST "${API_URL}" -F "modus=CALLEND" -F "audioFile=@/tmp/${UID}.mp3;type=audio/mpeg3" -F "uniqueid=${UID}" -F "mandantId=${MANDANT_ID}" -F "accesskey=${ACCESS_KEY}"
         echo "Finished upload. Cleaning up now."
         rm "/tmp/${UID}.mp3"
         echo "Finished cleaning. Done."
