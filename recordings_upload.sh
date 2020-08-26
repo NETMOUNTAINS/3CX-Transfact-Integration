@@ -1,7 +1,7 @@
 
 #!/bin/sh
 
-# 3CX-Transfact Recordings Submission BETA 1
+# 3CX-Transfact Recordings Submission v1.0
 # © 08/2020 by S.Reugels <s.reugels@netmountains.de>
 
 # This script was created for the interface between
@@ -17,6 +17,19 @@ ACCESS_KEY=""
 
 # Default instance path, only modify in custom infrastructures
 MONITORDIR="/var/lib/3cxpbx/Instance1/Data/Recordings"
+
+#--------------------------------------------------
+# Checking required packages
+#--------------------------------------------------
+
+REQUIRED_PKG="inotify-tools"
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PKG|grep "is installed")
+echo Checking for $REQUIRED_PKG: $PKG_OK
+if [ "" = "$PKG_OK" ]; then
+  echo "No $REQUIRED_PKG. Setting up $REQUIRED_PKG."
+  sudo apt-get --yes install $REQUIRED_PKG 
+fi
+
 #---------------------------------------------------
 echo "Starting call monitoring."
 inotifywait -m -r -e close_write --format '%w%f' "${MONITORDIR}" | while read NEWFILE
