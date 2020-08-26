@@ -1,0 +1,11 @@
+[Unit]
+Description=3CX Transfact Recordings Upload
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/bin/bash /usr/bin/3CX-Transfact-Recordings-Upload.sh
+
+[Install]
+WantedBy=multi-user.target
