@@ -32,7 +32,7 @@ fi
 
 #---------------------------------------------------
 echo "Starting call monitoring."
-inotifywait -m -r -e close_write --format '%w%f' "${MONITORDIR}" | while read NEWFILE
+inotifywait -q -m -r -e close_write --format '%w%f' "${MONITORDIR}" | while read NEWFILE
 do
         AGENT=$(echo ${NEWFILE} | rev | cut -d"/" -f2  | rev)
         TIMESTAMP=$(echo ${NEWFILE} | rev | cut -d"_" -f1 | rev | cut -d"(" -f1)
