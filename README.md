@@ -33,7 +33,7 @@ Installation:
 
 Notes:
 ---------
-- CallJournaling is limited to 1 call per second.
+- Nothing for now.
 
 Compatibility:
 ---------
