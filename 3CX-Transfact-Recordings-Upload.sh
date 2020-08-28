@@ -36,13 +36,13 @@ inotifywait -q -m -r -e close_write --format '%w%f' "${MONITORDIR}" | while read
 do
         AGENT=$(echo ${NEWFILE} | rev | cut -d"/" -f2  | rev)
         TIMESTAMP=$(echo ${NEWFILE} | rev | cut -d"_" -f1 | rev | cut -d"(" -f1)
-        UID=$TIMESTAMP$AGENT
+        call_uid=$TIMESTAMP$AGENT
         echo "Detected new ended call from agent $AGENT. Starting conversion"
-        lame -V 6 --quiet "${NEWFILE}" "/tmp/$UID.mp3"
+        lame -V 6 --quiet "${NEWFILE}" "/tmp/$call_uid.mp3"
         echo "Finished conversion ID $UID. Uploading now."
         sleep 2
-        curl -X POST "${API_URL}" -F "modus=CALLEND" -F "audioFile=@/tmp/${UID}.mp3;type=audio/mpeg3" -F "uniqueid=${UID}" -F "mandantId=${MANDANT_ID}" -F "accesskey=${ACCESS_KEY}"
+        curl -X POST "${API_URL}" -F "modus=CALLEND" -F "audioFile=@/tmp/${call_uid}.mp3;type=audio/mpeg3" -F "uniqueid=${call_uid}" -F "mandantId=${MANDANT_ID}" -F "accesskey=${ACCESS_KEY}"
         echo "Finished upload. Cleaning up now."
-        rm "/tmp/${UID}.mp3"
+        rm "/tmp/${call_uid}.mp3"
         echo "Finished cleaning. Done."
 done
