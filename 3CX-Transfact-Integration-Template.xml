@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Crm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Country="DE" Name="Transfact" Version="5">
+<Crm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Country="DE" Name="Transfact" Version="6">
   <Number Prefix="Plus" MaxLength="" />
   <Connection MaxConcurrentRequests="10" />
   <Parameters>
