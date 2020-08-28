@@ -1,162 +1,162 @@
 <?xml version="1.0"?>
-<Crm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Country="DE" Name="Transfact" Version="4" Developer="s.reugels@netmountains.de">
-    <Number Prefix="Plus" MaxLength="" />
-    <Connection MaxConcurrentRequests="10" />
-    <Parameters>
-        <Parameter Name="ReportCallEnabled" Type="Boolean" Editor="String" Title="Anrufe in Transfact loggen" Default="True" />
-        <Parameter Name="APIendpoint" Type="String" Editor="String" Title="API Endpoint:" Default="" />
-        <Parameter Name="MandantId" Type="String" Editor="String" Title="Mandanten ID:" Default="" />
-        <Parameter Name="AccessKey" Type="String" Editor="String" Title="Access Key:" Default="" />
-    </Parameters>
-    <Authentication Type="No" />
-    <Scenarios>
-        <Scenario Id="" Type="REST">
-            <Request Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
-                <PostValues>
-                    <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
-                    <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
-                    <Value Key="execute" Passes="1" Type="String">"resolveCallerNr"</Value>
-                    <Value Key="caller" Passes="1" Type="String">[Number]</Value>
-                </PostValues>
-            </Request>
-            <Rules>
-                <Rule Type="Any">contactId</Rule>
-            </Rules>
-            <Variables>
-                <Variable Name="ContactID" Path="contactId">
-                    <Filter />
-                </Variable>
-                <Variable Name="FirstName" Path="firstName">
-                    <Filter />
-                </Variable>
-                <Variable Name="LastName" Path="lastName">
-                    <Filter />
-                </Variable>
-                <Variable Name="CompanyName" Path="companyName">
-                    <Filter />
-                </Variable>
-                <Variable Name="PhoneBusiness" Path="phoneBusiness">
-                    <Filter />
-                </Variable>
-                <Variable Name="PhoneMobile" Path="phoneMobile">
-                    <Filter />
-                </Variable>
-                <Variable Name="FaxBusiness" Path="faxBusiness">
-                    <Filter />
-                </Variable>
-                <Variable Name="ContactURL" Path="contactUrl">
-                    <Filter />
-                </Variable>
-            </Variables>
-            <Outputs AllowEmpty="true">
-                <Output Type="ContactID" Passes="0" Value="[ContactID]" />
-                <Output Type="FirstName" Passes="0" Value="[FirstName]" />
-                <Output Type="LastName" Passes="0" Value="[LastName]" />
-                <Output Type="CompanyName" Passes="0" Value="[CompanyName]" />
-                <Output Type="PhoneBusiness" Passes="0" Value="[Number]" />
-                <Output Type="PhoneMobile" Passes="0" Value="[PhoneMobile]" />
-                <Output Type="FaxBusiness" Passes="0" Value="[FaxBusiness]" />
-                <Output Type="ContactUrl" Passes="0" Value="[ContactURL]" />
-            </Outputs>
-        </Scenario>
-        <Scenario Id="ReportCall" Type="REST">
-            <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Inbound" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
-                <PostValues>
-                    <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
-                    <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
-                    <Value Key="modus" Passes="1" Type="String">"INCOMING"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
-                    <Value Key="caller" Passes="1" Type="String">[Number]</Value>
-                    <Value Key="callee" Passes="1" Type="String">[Number]</Value>
-                </PostValues>
-            </Request>
-            <Variables />
-            <Outputs Next="ReportCallInboundAnswered" AllowEmpty="true" />
-        </Scenario>
-        <Scenario Id="ReportCallInboundAnswered" Type="REST">
-            <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Inbound" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
-                <PostValues>
-                    <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
-                    <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
-                    <Value Key="modus" Passes="1" Type="String">"ANSWERED"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
-                    <Value Key="callee" Passes="1" Type="String">[Agent]</Value>
-                </PostValues>
-            </Request>
-            <Variables />
-            <Outputs Next="ReportCallInboundEnd" AllowEmpty="true" />
-        </Scenario>
-        <Scenario Id="ReportCallInboundEnd" Type="REST">
-            <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Inbound" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
-                <PostValues>
-                    <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
-                    <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
-                    <Value Key="modus" Passes="1" Type="String">"CALLEND"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
-                    <Value Key="start" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
-                    <Value Key="end" Passes="1" Type="String">[[CallEndTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
-                </PostValues>
-            </Request>
-            <Variables />
-            <Outputs Next="ReportCallInboundMissed" AllowEmpty="true" />
-        </Scenario>
-        <Scenario Id="ReportCallInboundMissed" Type="REST">
-            <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Missed" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
-                <PostValues>
-                    <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
-                    <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
-                    <Value Key="modus" Passes="1" Type="String">"INCOMING"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
-                    <Value Key="caller" Passes="1" Type="String">[Number]</Value>
-                    <Value Key="callee" Passes="1" Type="String">[Number]</Value>
-                </PostValues>
-            </Request>
-            <Variables />
-            <Outputs Next="ReportCallOutbound" AllowEmpty="true" />
-        </Scenario>
-        <Scenario Id="ReportCallOutbound" Type="REST">
-            <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Outbound" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
-                <PostValues>
-                    <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
-                    <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
-                    <Value Key="modus" Passes="1" Type="String">"OUTGOING"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
-                    <Value Key="caller" Passes="1" Type="String">[Agent]</Value>
-                    <Value Key="callee" Passes="1" Type="String">[Number]</Value>
-                    <Value Key="angenommenVon" Passes="1" Type="String">[Agent]</Value>
-                </PostValues>
-            </Request>
-            <Variables />
-            <Outputs Next="ReportCallOutboundAnswered" AllowEmpty="true" />
-        </Scenario>
-        <Scenario Id="ReportCallOutboundAnswered" Type="REST">
-            <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Outbound" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
-                <PostValues>
-                    <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
-                    <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
-                    <Value Key="modus" Passes="1" Type="String">"CALLEND"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
-                    <Value Key="start" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
-                    <Value Key="end" Passes="1" Type="String">[[CallEndTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
-                </PostValues>
-            </Request>
-            <Variables />
-            <Outputs Next="ReportCallOutboundNotAnswered" AllowEmpty="true" />
-        </Scenario>
-        <Scenario Id="ReportCallOutboundNotAnswered" Type="REST">
-            <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Notanswered" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
-                <PostValues>
-                    <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
-                    <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
-                    <Value Key="modus" Passes="1" Type="String">"OUTGOING"</Value>
-                    <Value Key="uniqueid" Passes="1" Type="String">[[Agent][CallStartTimeLocal].ToString("yyyyMMddHHmmss")]</Value>
-                    <Value Key="caller" Passes="1" Type="String">[Agent]</Value>
-                    <Value Key="callee" Passes="1" Type="String">[Number]</Value>
-                    <Value Key="angenommenVon" Passes="1" Type="String">[Agent]</Value>
-                </PostValues>
-            </Request>
-            <Variables />
-            <Outputs AllowEmpty="false" />
-        </Scenario>
-    </Scenarios>
+<Crm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Country="DE" Name="Transfact" Version="5">
+  <Number Prefix="Plus" MaxLength="" />
+  <Connection MaxConcurrentRequests="10" />
+  <Parameters>
+    <Parameter Name="ReportCallEnabled" Type="Boolean" Editor="String" Title="Anrufe in Transfact loggen" Default="True" />
+    <Parameter Name="APIendpoint" Type="String" Editor="String" Title="API Endpoint:" Default="" />
+    <Parameter Name="MandantId" Type="String" Editor="String" Title="Mandanten ID:" Default="" />
+    <Parameter Name="AccessKey" Type="String" Editor="String" Title="Access Key:" Default="" />
+  </Parameters>
+  <Authentication Type="No" />
+  <Scenarios>
+    <Scenario Id="" Type="REST">
+      <Request Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
+        <PostValues>
+          <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
+          <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
+          <Value Key="execute" Passes="1" Type="String">"resolveCallerNr"</Value>
+          <Value Key="caller" Passes="1" Type="String">[Number]</Value>
+        </PostValues>
+      </Request>
+      <Rules>
+        <Rule Type="Any">contactId</Rule>
+      </Rules>
+      <Variables>
+        <Variable Name="ContactID" Path="contactId">
+          <Filter />
+        </Variable>
+        <Variable Name="FirstName" Path="firstName">
+          <Filter />
+        </Variable>
+        <Variable Name="LastName" Path="lastName">
+          <Filter />
+        </Variable>
+        <Variable Name="CompanyName" Path="companyName">
+          <Filter />
+        </Variable>
+        <Variable Name="PhoneBusiness" Path="phoneBusiness">
+          <Filter />
+        </Variable>
+        <Variable Name="PhoneMobile" Path="phoneMobile">
+          <Filter />
+        </Variable>
+        <Variable Name="FaxBusiness" Path="faxBusiness">
+          <Filter />
+        </Variable>
+        <Variable Name="ContactURL" Path="contactUrl">
+          <Filter />
+        </Variable>
+      </Variables>
+      <Outputs AllowEmpty="true">
+        <Output Type="ContactID" Passes="0" Value="[ContactID]" />
+        <Output Type="FirstName" Passes="0" Value="[FirstName]" />
+        <Output Type="LastName" Passes="0" Value="[LastName]" />
+        <Output Type="CompanyName" Passes="0" Value="[CompanyName]" />
+        <Output Type="PhoneBusiness" Passes="0" Value="[Number]" />
+        <Output Type="PhoneMobile" Passes="0" Value="[PhoneMobile]" />
+        <Output Type="FaxBusiness" Passes="0" Value="[FaxBusiness]" />
+        <Output Type="ContactUrl" Passes="0" Value="[ContactURL]" />
+      </Outputs>
+    </Scenario>
+    <Scenario Id="ReportCall" Type="REST">
+      <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Inbound" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
+        <PostValues>
+          <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
+          <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
+          <Value Key="modus" Passes="1" Type="String">"INCOMING"</Value>
+          <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeUTC].ToString("yyyyMMddHHmmss")][Agent]</Value>
+          <Value Key="caller" Passes="1" Type="String">[Number]</Value>
+          <Value Key="callee" Passes="1" Type="String">[Number]</Value>
+        </PostValues>
+      </Request>
+      <Variables />
+      <Outputs Next="ReportCallInboundAnswered" AllowEmpty="true" />
+    </Scenario>
+    <Scenario Id="ReportCallInboundAnswered" Type="REST">
+      <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Inbound" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
+        <PostValues>
+          <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
+          <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
+          <Value Key="modus" Passes="1" Type="String">"ANSWERED"</Value>
+          <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeUTC].ToString("yyyyMMddHHmmss")][Agent]</Value>
+          <Value Key="callee" Passes="1" Type="String">[Agent]</Value>
+        </PostValues>
+      </Request>
+      <Variables />
+      <Outputs Next="ReportCallInboundEnd" AllowEmpty="true" />
+    </Scenario>
+    <Scenario Id="ReportCallInboundEnd" Type="REST">
+      <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Inbound" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
+        <PostValues>
+          <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
+          <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
+          <Value Key="modus" Passes="1" Type="String">"CALLEND"</Value>
+          <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeUTC].ToString("yyyyMMddHHmmss")][Agent]</Value>
+          <Value Key="start" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
+          <Value Key="end" Passes="1" Type="String">[[CallEndTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
+        </PostValues>
+      </Request>
+      <Variables />
+      <Outputs Next="ReportCallInboundMissed" AllowEmpty="true" />
+    </Scenario>
+    <Scenario Id="ReportCallInboundMissed" Type="REST">
+      <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Missed" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
+        <PostValues>
+          <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
+          <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
+          <Value Key="modus" Passes="1" Type="String">"INCOMING"</Value>
+          <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeUTC].ToString("yyyyMMddHHmmss")][Agent]</Value>
+          <Value Key="caller" Passes="1" Type="String">[Number]</Value>
+          <Value Key="callee" Passes="1" Type="String">[Number]</Value>
+        </PostValues>
+      </Request>
+      <Variables />
+      <Outputs Next="ReportCallOutbound" AllowEmpty="true" />
+    </Scenario>
+    <Scenario Id="ReportCallOutbound" Type="REST">
+      <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Outbound" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
+        <PostValues>
+          <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
+          <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
+          <Value Key="modus" Passes="1" Type="String">"OUTGOING"</Value>
+          <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeUTC].ToString("yyyyMMddHHmmss")][Agent]</Value>
+          <Value Key="caller" Passes="1" Type="String">[Agent]</Value>
+          <Value Key="callee" Passes="1" Type="String">[Number]</Value>
+          <Value Key="angenommenVon" Passes="1" Type="String">[Agent]</Value>
+        </PostValues>
+      </Request>
+      <Variables />
+      <Outputs Next="ReportCallOutboundAnswered" AllowEmpty="true" />
+    </Scenario>
+    <Scenario Id="ReportCallOutboundAnswered" Type="REST">
+      <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Outbound" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
+        <PostValues>
+          <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
+          <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
+          <Value Key="modus" Passes="1" Type="String">"CALLEND"</Value>
+          <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeUTC].ToString("yyyyMMddHHmmss")][Agent]</Value>
+          <Value Key="start" Passes="1" Type="String">[[CallStartTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
+          <Value Key="end" Passes="1" Type="String">[[CallEndTimeLocal].ToString("yyyy-MM-dd HH:mm:ss")]</Value>
+        </PostValues>
+      </Request>
+      <Variables />
+      <Outputs Next="ReportCallOutboundNotAnswered" AllowEmpty="true" />
+    </Scenario>
+    <Scenario Id="ReportCallOutboundNotAnswered" Type="REST">
+      <Request SkipIf="[ReportCallEnabled]!=True||[CallType]!=Notanswered" Url="[APIendpoint]" MessagePasses="0" RequestContentType="application/x-www-form-urlencoded" RequestEncoding="UrlEncoded" RequestType="Post" ResponseType="Json">
+        <PostValues>
+          <Value Key="mandantId" Passes="1" Type="String">[MandantId]</Value>
+          <Value Key="accesskey" Passes="1" Type="String">[AccessKey]</Value>
+          <Value Key="modus" Passes="1" Type="String">"OUTGOING"</Value>
+          <Value Key="uniqueid" Passes="1" Type="String">[[CallStartTimeUTC].ToString("yyyyMMddHHmmss")][Agent]</Value>
+          <Value Key="caller" Passes="1" Type="String">[Agent]</Value>
+          <Value Key="callee" Passes="1" Type="String">[Number]</Value>
+          <Value Key="angenommenVon" Passes="1" Type="String">[Agent]</Value>
+        </PostValues>
+      </Request>
+      <Variables />
+      <Outputs AllowEmpty="false" />
+    </Scenario>
+  </Scenarios>
 </Crm>
