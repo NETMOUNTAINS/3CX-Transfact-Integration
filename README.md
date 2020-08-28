@@ -38,8 +38,8 @@ Notes:
 Compatibility:
 ---------
 Tested with:
-- 3CX (Professional/Enterprise) V16
-- Transfact 18.439 (03/2020)
+- 3CX (Professional/Enterprise) V16.0.6.641
+- Transfact 19.045 (08/2020)
 
 License & Contribution:
 ---------
