@@ -1,7 +1,7 @@
 
 #!/bin/sh
 
-# 3CX-Transfact Recordings Submission BETA 1
+# 3CX-Transfact Recordings Submission
 # © 08/2020 by S.Reugels <s.reugels@netmountains.de>
 
 # This script was created for the interface between
