@@ -27,10 +27,10 @@ Installation:
 ### II. Watcher script
 1. Download .sh to /usr/bin at your 3CX-Instance
 2. Make it executable (chmod +x)
-3. Create service (see Example.service)
-    a. Copy EXAMPLE.sh to /etc/systemd/system (e.g.: /etc/systemd/system/3cx-transfact.service)
-    b. systemctl start 3cx-transfact
-    c. systemctl enable 3cx-transfact
+3. Create service (see Example.service)  
+    a. Copy EXAMPLE.sh to /etc/systemd/system (e.g.: /etc/systemd/system/3cx-transfact.service)  
+    b. systemctl start 3cx-transfact  
+    c. systemctl enable 3cx-transfact  
 6. Reboot PBX.
 
 Notes:
